@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * Created by leo on 11/19/17.
  */
 @SpringBootApplication
-@EnableScheduling
 public class Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
