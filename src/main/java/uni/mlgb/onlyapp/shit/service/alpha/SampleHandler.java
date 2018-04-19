@@ -76,6 +76,8 @@ public class SampleHandler extends RequestHandler {
                 break;
             }
             case SkillNameConsts.DYNAMIC_INFO:
+                int offsetForSpecUser = 0;
+                info = smart.dynamicInfo(slots.get(SlotNameConsts.STAR).getValue(), offsetForSpecUser);
                 break;
             default:
                 ;
@@ -92,7 +94,8 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public void onSessionEndedRequest(SkillData skillData) {
-
+        // Shutdown user's session state
+        // TODO
     }
 
     /**
