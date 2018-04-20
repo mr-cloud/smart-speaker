@@ -36,18 +36,8 @@ public class SampleHandlerTest {
         Map<String, SkillRequestSlot> slots = new HashMap<>();
         slots.put(SlotNameConsts.SPORT, SkillRequestSlot.builder().value("篮球").build());
         slots.put(SlotNameConsts.STAR, SkillRequestSlot.builder().value("凯里欧文").build());
-        skillData.builder()
-                .session(SkillSession.builder().sessionId("1")
-                        .application(SkillSessionApplicationInfo.builder().applicationId("1")
-                                .build())
-                        .contexts(new HashMap<>())
-                        .isNew(true)
-                        .build())
-                .request(SkillRequest.builder().type(RequestTypeConstants.INTENT_REQUEST)
-                        .intent(SkillRequestIntent.builder().name(SkillNameConsts.STATIC_INFO)
-                                .slots(slots).build())
-                        .build())
-                .build();
+        skillData = AlphaUtils.buildSimpleSkillData("1", "1", RequestTypeConstants.INTENT_REQUEST,
+                SkillNameConsts.STATIC_INFO, slots);
     }
 
     @After
