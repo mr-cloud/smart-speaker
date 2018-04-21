@@ -1,6 +1,7 @@
 package uni.mlgb.onlyapp.shit.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jd.alpha.skill.client.constant.RequestTypeConstants;
 import com.jd.alpha.skill.client.entity.request.SkillData;
 import com.jd.alpha.skill.client.entity.request.SkillRequestSlot;
@@ -9,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +25,6 @@ import uni.mlgb.onlyapp.shit.service.model.SlotNameConsts;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,13 +35,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(SampleController.class)
 public class SampleControllerTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(SampleControllerTest.class);
+
     @Autowired
     private MockMvc mockMvc;
 
     private SkillResponse skillResponse;
     private SkillData skillData;
     @MockBean
-    private SampleHandler sampleHandler;
+    private SampleHandler handler;
+
+    private Gson gson = new GsonBuilder().serializeNulls().create();
 
     @Before
     public void setUp() throws Exception {
@@ -60,9 +67,11 @@ public class SampleControllerTest {
     @Test
     public void index() throws Exception {
         String requestBody = new Gson().toJson(skillData);
-        given(sampleHandler.handle(any())).willReturn(skillResponse);
+        given(handler.handle(any())).willReturn(skillResponse);
+        String skillResponseStr = gson.toJson(skillResponse);
+        logger.info("Response Json String: {}", skillResponseStr);
         mockMvc.perform(post("/sample").content(requestBody).accept("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{}"));
+                .andExpect(content().json(skillResponseStr, true));
     }
 }

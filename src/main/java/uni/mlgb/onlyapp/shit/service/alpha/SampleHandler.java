@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uni.mlgb.onlyapp.shit.service.model.BaseSmart;
+import uni.mlgb.onlyapp.shit.service.model.ModelConsts;
 import uni.mlgb.onlyapp.shit.service.model.SkillNameConsts;
 import uni.mlgb.onlyapp.shit.service.model.SlotNameConsts;
 
@@ -55,7 +56,7 @@ public class SampleHandler extends RequestHandler {
     @Override
     public SkillResponse onLaunchRequest(SkillData skillData) {
         String hello = smart.sayHello();
-        return AlphaUtils.buildSimpleResponse(skillData.getSession().getApplication().getApplicationId(),
+        return AlphaUtils.buildSimpleResponse(APP_ID,
                 false,
                 hello);
     }
@@ -84,7 +85,7 @@ public class SampleHandler extends RequestHandler {
             default:
                 ;
         }
-        return AlphaUtils.buildSimpleResponse(skillData.getSession().getApplication().getApplicationId(),
+        return AlphaUtils.buildSimpleResponse(APP_ID,
                 false,
                 info);
     }
@@ -119,7 +120,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onHelpIntent(SkillData skillData) {
-        return null;
+        return AlphaUtils.buildSimpleResponse(APP_ID, false, ModelConsts.HELP_MENU);
     }
 
     /**
@@ -130,7 +131,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onNextIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -141,7 +142,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onRepeatIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -152,7 +153,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onOtherBuildInIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -163,6 +164,6 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse defaultResponse(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 }
