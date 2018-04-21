@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uni.mlgb.onlyapp.shit.service.model.BaseSmart;
+import uni.mlgb.onlyapp.shit.service.model.ModelConsts;
 import uni.mlgb.onlyapp.shit.service.model.SkillNameConsts;
 import uni.mlgb.onlyapp.shit.service.model.SlotNameConsts;
 
@@ -55,7 +56,7 @@ public class SampleHandler extends RequestHandler {
     @Override
     public SkillResponse onLaunchRequest(SkillData skillData) {
         String hello = smart.sayHello();
-        return AlphaUtils.buildSimpleResponse(skillData.getSession().getApplication().getApplicationId(),
+        return AlphaUtils.buildSimpleResponse(APP_ID,
                 false,
                 hello);
     }
@@ -78,11 +79,13 @@ public class SampleHandler extends RequestHandler {
                 break;
             }
             case SkillNameConsts.DYNAMIC_INFO:
+                int offsetForSpecUser = 0;
+                info = smart.dynamicInfo(slots.get(SlotNameConsts.STAR).getValue(), offsetForSpecUser);
                 break;
             default:
                 ;
         }
-        return AlphaUtils.buildSimpleResponse(skillData.getSession().getApplication().getApplicationId(),
+        return AlphaUtils.buildSimpleResponse(APP_ID,
                 false,
                 info);
     }
@@ -94,7 +97,8 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public void onSessionEndedRequest(SkillData skillData) {
-
+        // Shutdown user's session state
+        // TODO
     }
 
     /**
@@ -116,7 +120,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onHelpIntent(SkillData skillData) {
-        return null;
+        return AlphaUtils.buildSimpleResponse(APP_ID, false, ModelConsts.HELP_MENU);
     }
 
     /**
@@ -127,7 +131,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onNextIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -138,7 +142,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onRepeatIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -149,7 +153,7 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse onOtherBuildInIntent(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 
     /**
@@ -160,6 +164,6 @@ public class SampleHandler extends RequestHandler {
      */
     @Override
     public SkillResponse defaultResponse(SkillData skillData) {
-        return null;
+        return onHelpIntent(skillData);
     }
 }
