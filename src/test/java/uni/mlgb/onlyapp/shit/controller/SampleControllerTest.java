@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -48,15 +49,18 @@ public class SampleControllerTest {
 
     private Gson gson = new GsonBuilder().serializeNulls().create();
 
+    @Value("${app.id}")
+    private String APP_ID;
+
     @Before
     public void setUp() throws Exception {
-        skillResponse = AlphaUtils.buildSimpleResponse("1",
+        skillResponse = AlphaUtils.buildSimpleResponse(APP_ID,
                 false,
                 "凯里欧文是NBA全明星控卫。");
         Map<String, SkillRequestSlot> slots = new HashMap<>();
         slots.put(SlotNameConsts.SPORT, SkillRequestSlot.builder().value("篮球").build());
         slots.put(SlotNameConsts.STAR, SkillRequestSlot.builder().value("凯里欧文").build());
-        skillData = AlphaUtils.buildSimpleSkillData("1", "1", RequestTypeConstants.INTENT_REQUEST,
+        skillData = AlphaUtils.buildSimpleSkillData("1", APP_ID, RequestTypeConstants.INTENT_REQUEST,
                 SkillNameConsts.STATIC_INFO, slots);
     }
 
@@ -67,6 +71,7 @@ public class SampleControllerTest {
     @Test
     public void index() throws Exception {
         String requestBody = new Gson().toJson(skillData);
+        logger.info("Request Json String: {}", requestBody);
         given(handler.handle(any())).willReturn(skillResponse);
         String skillResponseStr = gson.toJson(skillResponse);
         logger.info("Response Json String: {}", skillResponseStr);

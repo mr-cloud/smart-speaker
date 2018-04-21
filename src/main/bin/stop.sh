@@ -1,8 +1,8 @@
 #!/bin/bash
 BASEDIR=`dirname $0`/../lib
 BASEDIR=`(cd "$BASEDIR"; pwd)`
-FEATURE=com.jd.app.bp.data.ana.sku.stats.Main
- 
+FEATURE="uni.mlgb.onlyapp.shit.Application"
+
 pidnum=`ps -ef|grep "$BASEDIR $FEATURE"|grep -v grep|wc -l`
 if [ $pidnum -lt 1 ]
 	then
