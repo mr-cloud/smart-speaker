@@ -5,6 +5,7 @@ import com.jd.alpha.skill.client.entity.request.SkillData;
 import com.jd.alpha.skill.client.entity.request.SkillRequestSlot;
 import com.jd.alpha.skill.client.entity.response.SkillResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uni.mlgb.onlyapp.shit.service.model.BaseSmart;
 import uni.mlgb.onlyapp.shit.service.model.SkillNameConsts;
@@ -20,6 +21,8 @@ public class SampleHandler extends RequestHandler {
     @Autowired
     private BaseSmart smart;
 
+    @Value("${app.id}")
+    private String APP_ID;
     /**
      * 请求合法性校验
      *
@@ -29,8 +32,7 @@ public class SampleHandler extends RequestHandler {
     @Override
     public boolean validate(SkillData skillData) {
         String appId = skillData.getSession().getApplication().getApplicationId();
-        // TODO validate with appId.
-        return true;
+        return APP_ID.equals(appId);
     }
 
     /**

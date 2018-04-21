@@ -18,13 +18,13 @@ public class BaseSmart {
     }
 
     public String sayHello() {
-        return "欢迎聊球！";
+        return "欢迎聊球！我可以告诉你运动员的基本信息和他们的动态呢！";
     }
 
     public String staticInfo(String sport, String star) {
         String info = nbaDb.get(star);
         if (info == null) {
-            info = nbaDb.get("凯里欧文");
+            info = ModelConsts.CONSCIOUSNESS_WORDS + nbaDb.get("凯里欧文");
         }
         return info;
     }
