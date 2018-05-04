@@ -22,7 +22,7 @@ public class SampleController {
      * @return SkillResponse
      */
     @PostMapping(value = "/sample", produces = {
-            "application/json;charset=UTF-8"})
+            "application/json;charset=UTF-8"}, consumes = {"application/json"})
     public SkillResponse index(@RequestBody String requestBody) {
         // 将得到的JSON数据转换为SkillData对象,并交由Handler进行处理
         SkillData data = new Gson().fromJson(requestBody, SkillData.class);

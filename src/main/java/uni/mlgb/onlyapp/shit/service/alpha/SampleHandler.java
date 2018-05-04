@@ -33,6 +33,7 @@ public class SampleHandler extends RequestHandler {
     @Override
     public boolean validate(SkillData skillData) {
         String appId = skillData.getSession().getApplication().getApplicationId();
+        // XXX log here.
         return APP_ID.equals(appId);
     }
 
