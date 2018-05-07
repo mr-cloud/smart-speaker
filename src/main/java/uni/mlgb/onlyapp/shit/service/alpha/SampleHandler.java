@@ -4,6 +4,8 @@ import com.jd.alpha.skill.client.RequestHandler;
 import com.jd.alpha.skill.client.entity.request.SkillData;
 import com.jd.alpha.skill.client.entity.request.SkillRequestSlot;
 import com.jd.alpha.skill.client.entity.response.SkillResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,11 +21,13 @@ import java.util.Map;
  */
 @Component
 public class SampleHandler extends RequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(SampleHandler.class);
     @Autowired
     private BaseSmart smart;
 
     @Value("${app.id}")
     private String APP_ID;
+
     /**
      * 请求合法性校验
      *
@@ -33,8 +37,11 @@ public class SampleHandler extends RequestHandler {
     @Override
     public boolean validate(SkillData skillData) {
         String appId = skillData.getSession().getApplication().getApplicationId();
-        // XXX log here.
-        return APP_ID.equals(appId);
+        // FIXME
+        if (!APP_ID.equalsIgnoreCase(appId)) {
+            logger.warn("validate: request appId={}, expected appId={}", appId, APP_ID);
+        }
+        return true;
     }
 
     /**
