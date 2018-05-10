@@ -58,7 +58,7 @@ public class BaseSmart {
                 if (sepIndex != -1) {
                     String[] names = playerInfo.substring(0, sepIndex).split(",");
                     if (names.length >= 2) {
-                        String chineseName = names[1].replaceAll("-", "");
+                        String chineseName = names[1].replaceAll("[ -\\.·]", "");
                         this.nbaDb.put(chineseName, playerInfo.substring(sepIndex + 1));
                     }
                 }

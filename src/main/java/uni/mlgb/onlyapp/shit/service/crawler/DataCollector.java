@@ -6,6 +6,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhangxin516 on 5/9/18
@@ -91,6 +95,38 @@ public class DataCollector {
         return numPlayersFetched;
     }
 
+    public static int generatePlayerSlotValues(BufferedReader bfr, BufferedWriter bfw) throws IOException {
+        int cnt = 0;
+        int oriCnt = 0;
+        String sentence;
+        Set<String> existed = new HashSet<>();
+        while ((sentence = bfr.readLine()) != null) {
+            oriCnt += 1;
+            String[] names = sentence.split(",");
+            if (names.length >= 2) {
+                String slotVal = names[1].replaceAll("[ -\\.·]", "");
+                if (existed.contains(slotVal)) {
+                    continue;
+                }
+                existed.add(slotVal);
+                List<String> aliases = Arrays.asList(names[0].replaceAll("[ -\\.·]", ""));
+                StringBuilder sb = new StringBuilder();
+                for (String alias: aliases) {
+                    if(existed.contains(alias)) {
+                        continue;
+                    }
+                    existed.add(alias);
+                    sb.append(alias).append("/");
+                }
+                bfw.write(slotVal + "," + (sb.length() == 0? "": sb.substring(0, sb.length() - 1)));
+                bfw.newLine();
+                cnt += 1;
+            }
+        }
+        System.out.println("Origin number: " + oriCnt + ", Add number: " + cnt);
+        return cnt;
+    }
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Args cannot be empty!");
@@ -117,6 +153,24 @@ public class DataCollector {
                 BufferedWriter bfw = new BufferedWriter(new FileWriter(new File(filenameStatic)));
                 int cnt = collectPlayerStaticInfo(urlPrefix, bfw, bfr);
                 System.out.println(cnt + " players static info collected.");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if ("slotPlayer".equalsIgnoreCase(args[0])) {
+            String home = System.getProperty("user.home");
+            String filenamePlayer = home + "/" + "datahouse/logs/onlyshit/" + "nba-players.txt";
+            String workDir = System.getProperty("user.dir");
+            String filenamePlayerSlot = workDir + "/" + "src/main/resources/datahouse/" + "nba-players-slot.csv";
+            try {
+                BufferedReader bfr = new BufferedReader(new FileReader(new File(filenamePlayer)));
+                BufferedWriter bfw = new BufferedWriter(new FileWriter(new File(filenamePlayerSlot)));
+                int cnt = generatePlayerSlotValues(bfr, bfw);
+                System.out.println(cnt + " players' slots added.");
+                bfr.close();
+                bfw.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
