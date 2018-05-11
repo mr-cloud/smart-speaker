@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author leo
@@ -21,7 +18,9 @@ import java.util.Map;
 @Component
 public class BaseSmart {
     private Map<String, String> nbaDb = new HashMap<>();
-    private Map<String, List<String>> tweetsDb = new HashMap<>();
+    // XXX
+    private Map<String, Stack<String>> tweetsDb = new HashMap<>();
+    private Set<Player> playersDict = new HashSet<>();
 
     private static final Logger logger = LoggerFactory.getLogger(BaseSmart.class);
 
@@ -60,6 +59,10 @@ public class BaseSmart {
                     if (names.length >= 2) {
                         String chineseName = names[1].replaceAll("[ -\\.·]", "");
                         this.nbaDb.put(chineseName, playerInfo.substring(sepIndex + 1));
+                        Player player = new Player(chineseName);
+                        Set<String> aliases = player.getAliases();
+                        aliases.addAll(Arrays.asList(names[1].split("[ -\\.·]")));
+                        playersDict.add(player);
                     }
                 }
             }
@@ -99,5 +102,17 @@ public class BaseSmart {
 
     public int getTweetsDbSize() {
         return tweetsDb.size();
+    }
+
+    public Map<String, String> getNbaDb() {
+        return nbaDb;
+    }
+
+    public Set<Player> getPlayersDict() {
+        return playersDict;
+    }
+
+    public synchronized boolean addTweets(Map<String, List<String>> newTweets) {
+
     }
 }
