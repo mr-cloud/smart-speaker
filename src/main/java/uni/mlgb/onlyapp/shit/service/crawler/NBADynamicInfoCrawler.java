@@ -1,5 +1,6 @@
 package uni.mlgb.onlyapp.shit.service.crawler;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class NBADynamicInfoCrawler implements ICrawler {
             if (doc != null) {
                 Map<String, Deque<String>> newTweets = new HashMap<>();
                 NodeList items = doc.getElementsByTagName("item");
+                boolean isNewestRecorded = false;
+                String newestOffsetTitle = this.offsetTitle;
                 ITEM_LOOP:
                 for (int i = 0; i < items.getLength(); i++) {
                     Node item = items.item(i);
@@ -65,12 +68,14 @@ public class NBADynamicInfoCrawler implements ICrawler {
                             Element ele = (Element) part;
                             if ("title".equalsIgnoreCase(ele.getTagName())) {
                                 title = ele.getTextContent();
+                                if (!isNewestRecorded) {
+                                    newestOffsetTitle = title;
+                                    isNewestRecorded = true;
+                                }
                                 if (this.offsetTitle.equalsIgnoreCase(title)) {
                                     logger.info("Catching milestone: {}", title);
                                     break ITEM_LOOP;
                                 }
-                                if (i == 0)
-                                    offsetTitle = title;
                             } else if ("description".equalsIgnoreCase(ele.getTagName())) {
                                 StringBuilder sb = new StringBuilder();
                                 String paraContent = ele.getTextContent();
@@ -110,6 +115,7 @@ public class NBADynamicInfoCrawler implements ICrawler {
                         }
                     }
                 }
+                this.offsetTitle = newestOffsetTitle;
                 Map<String, List<String>> rst = new HashMap<>();
                 int numPlayer = newTweets.size();
                 int numTweet = 0;
@@ -126,13 +132,13 @@ public class NBADynamicInfoCrawler implements ICrawler {
                 return smart.addTweets(rst);
             }
         } catch (ParserConfigurationException e) {
-            logger.error(e.toString());
+            logger.error(ExceptionUtils.getStackTrace(e));
         } catch (MalformedURLException e) {
-            logger.error(e.toString());
+            logger.error(ExceptionUtils.getStackTrace(e));
         } catch (IOException e) {
-            logger.error(e.toString());
+            logger.error(ExceptionUtils.getStackTrace(e));
         } catch (SAXException e) {
-            logger.error(e.toString());
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return 0;
     }

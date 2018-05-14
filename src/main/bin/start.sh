@@ -11,6 +11,12 @@ LOG_DIR=/export/Logs
 # Set Java environment
 JAVA_ENV="-Dlog-dir=$LOG_DIR"
 
+RUNJAR=.
+for f in `find ${BASEDIR}/lib -name "*.*"`
+do
+	RUNJAR=$RUNJAR:$f
+done
+
 cd "${BASEDIR}/resources"
 
-setsid java $JAVA_OPTS $JAVA_ENV -DBASEDIR=${BASEDIR} -Dhome=${BASEDIR}/resources -Djava.ext.dirs=$BASEDIR/lib $FEATURE &
+setsid java $JAVA_OPTS $JAVA_ENV -DBASEDIR=${BASEDIR} -Dhome=${BASEDIR}/resources -classpath $RUNJAR $FEATURE &
