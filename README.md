@@ -1,6 +1,5 @@
-# only-push
 **Introduction**
-* Shit at every awful things together!
+query basics info and the newest dynamical info of NBA players through interacting with smart speaker.
 
 ### Demo
 - static info
